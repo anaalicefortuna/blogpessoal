@@ -1,5 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Tema } from "src/tema/entities/tema.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({name: 'tb_postagem'})
 export class Postagem {
@@ -14,8 +15,15 @@ export class Postagem {
 
     @IsNotEmpty()
     @Column()
-    text: string;
+    texto: string;
 
     @UpdateDateColumn()
     data: Date;
+
+    @ManyToOne(() => Tema, (tema) => tema.postagem, {
+        onDelete: "CASCADE"
+
+    })
+    tema: Tema;
+
 }
