@@ -1,15 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
 import { Postagem } from "../entities/postagem.entity";
-import { PostagemServicer } from "../services/postagem.service";
+import { PostagemService } from "../services/postagem.service";
 
+@UseGuards(JwtAuthGuard)
 @Controller('/postagens')
 export class  PostagemController {
-    constructor (private readonly postagemServicer: PostagemServicer) {}
+    constructor (private readonly postagemService: PostagemService) {}
 
     @Get()
     @HttpCode(HttpStatus.OK)
     findAll(): Promise<Postagem[]> {
-        return this.postagemServicer.findAll ();
+        return this.postagemService.findAll ();
     }
 
     @Get('/:id')
@@ -19,7 +21,7 @@ export class  PostagemController {
         id: number
 
     ): Promise<Postagem> {
-        return this.postagemServicer.findById(id);
+        return this.postagemService.findById(id);
     }
 
     @Get('/titulo/:titulo')
@@ -28,7 +30,7 @@ export class  PostagemController {
         @Param('titulo')
         titulo: string
     ): Promise<Postagem[]> {
-        return this.postagemServicer.findByIdTitulo(titulo);
+        return this.postagemService.findByIdTitulo(titulo);
     }
     @Post()
     @HttpCode(HttpStatus.CREATED)
@@ -36,7 +38,7 @@ export class  PostagemController {
         Body()
         Postagem: Postagem
     ): Promise<Postagem>{
-        return this.postagemServicer.create(Postagem)
+        return this.postagemService.create(Postagem)
     }
 
     @Put()
@@ -46,7 +48,7 @@ export class  PostagemController {
     postagem: Postagem
 
     ): Promise<Postagem> {
-        return this.postagemServicer.update(postagem);
+        return this.postagemService.update(postagem);
 
     }
 
@@ -56,7 +58,7 @@ export class  PostagemController {
         @Param('id', ParseIntPipe)
         id: number
     ) {
-        return this.postagemServicer.delete(id);
+        return this.postagemService.delete(id);
     }
     
 }
